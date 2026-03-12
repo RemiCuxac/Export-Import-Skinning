@@ -1,7 +1,9 @@
-import maya.mel as mel    
-import shutil
 import os
+import shutil
+
 import maya.cmds as cmds
+import maya.mel as mel
+
 
 def onMayaDroppedPythonFile(*args, **kwargs):
     """
@@ -11,11 +13,12 @@ def onMayaDroppedPythonFile(*args, **kwargs):
     pass
 
 try:
+    # TODO: fix commands because files were renamed
     currentParent = os.path.abspath(os.path.dirname(__file__))
-    scriptFile = os.path.join(currentParent, "ExportImportSkin.py")
+    scriptFile = os.path.join(currentParent, "ExportSkin.py")
     scriptFolder = cmds.internalVar(userScriptDir=True)
     shutil.copy(scriptFile, scriptFolder)
-    
+
     nameExport = 'ExportSkin'
     tooltipExport = 'Export skinning of selected geo'
     commandExport = """import ExportImportSkin as eis
