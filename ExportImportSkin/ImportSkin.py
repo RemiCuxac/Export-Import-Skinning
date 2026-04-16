@@ -1,3 +1,10 @@
+"""
+This script import the skin from a json file. It will also create the skin cluster if the geo isn't skinned.
+Usage:
+    Select one or more geos and execute the script.
+"""
+__author__ = "Rémi CUXAC"
+
 import json
 import os
 
@@ -18,28 +25,30 @@ def get_skinned_joints_from_json(file):
 def import_selected_skins():
     files = cmds.fileDialog2(fileFilter="*.json", dialogStyle=1, fileMode=4)
     if files:
-        listErrors = []
+        list_errors = []
         for f in files:
-            geoName = f.split(".")[-2].split("/")[-1]
-            if geoName in cmds.ls(type="transform"):
-                skinDeformer = get_skin_cluster(geoName)
-                if not skinDeformer:
-                    # shape = cmds.listRelatives(geoName, shapes=True)[0]
+            geo_name = f.split(".")[-2].split("/")[-1]
+            if geo_name in cmds.ls(type="transform"):
+                skin_deformer = get_skin_cluster(geo_name)
+                if not skin_deformer:
+                    # shape = cmds.listRelatives(geo_name, shapes=True)[0]
                     skel = get_skinned_joints_from_json(f)
-                    cmds.skinCluster(skel, geoName, tsb=1)
-                    skinDeformer = get_skin_cluster(geoName)
-                    cmds.skinPercent(skinDeformer[0], geoName, normalize=True)
-                cmds.deformerWeights(f.split("/")[-1], im=True, format="JSON", method="index", deformer=skinDeformer[0],
+                    cmds.skinCluster(skel, geo_name, tsb=1)
+                    skin_deformer = get_skin_cluster(geo_name)
+                    cmds.skinPercent(skin_deformer[0], geo_name, normalize=True)
+                cmds.deformerWeights(f.split("/")[-1], im=True, format="JSON", method="index",
+                                     deformer=skin_deformer[0],
                                      path=f.rsplit("/", 1)[0])
-                cmds.skinPercent(skinDeformer[0], geoName, normalize=True)
+                cmds.skinPercent(skin_deformer[0], geo_name, normalize=True)
             else:
-                listErrors.append(geoName)
-        if listErrors:
+                list_errors.append(geo_name)
+        if list_errors:
             message = "The followings geos has not been found :\n"
-            for geo in listErrors:
+            for geo in list_errors:
                 message += f"\n{geo}"
             cmds.confirmDialog(title="Problem", message=message, button="OK")
         else:
             cmds.confirmDialog(title="Good", message="Done !", button="OK")
+
 
 import_selected_skins()

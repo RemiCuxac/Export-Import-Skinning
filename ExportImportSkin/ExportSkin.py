@@ -1,3 +1,10 @@
+"""
+This script export the skin inside a json file, to be imported further.
+Usage:
+    Select one or more geos and execute the script.
+"""
+__author__ = "Rémi CUXAC"
+
 import maya.cmds as cmds
 
 
@@ -7,11 +14,11 @@ def get_skin_cluster(obj):
 
 def check_naming():
     skel = cmds.ls(type="joint")
-    listErrors = [bone.split("|")[-1] for bone in skel if "|" in bone]
-    listErrors = list(set(listErrors))
-    if listErrors:
+    list_errors = [bone.split("|")[-1] for bone in skel if "|" in bone]
+    list_errors = list(set(list_errors))
+    if list_errors:
         message = "The followings bones has the same name than another bone :\n"
-        for bone in listErrors:
+        for bone in list_errors:
             message += f"\n{bone}"
         cmds.confirmDialog(title="Problem", message=message, button="OK")
         return False
@@ -25,10 +32,10 @@ def export_selected_skins(pGeoList):
     folder = cmds.fileDialog2(dialogStyle=1, fileMode=3)
     folder = folder[0] if folder else None
     for geo in pGeoList:
-        skinDeformer = get_skin_cluster(geo)
-        if skinDeformer:
+        skin_deformer = get_skin_cluster(geo)
+        if skin_deformer:
             cmds.deformerWeights(geo + ".json", format="JSON", path=folder, export=True,
-                                 deformer=str(skinDeformer[0]))
+                                 deformer=str(skin_deformer[0]))
         else:
             cmds.confirmDialog(title="Problem", message=f"No skin cluster applied to {geo}. Export aborted.",
                                button="OK")
