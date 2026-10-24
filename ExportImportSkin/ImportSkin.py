@@ -3,7 +3,7 @@ This script import the skin from a json file. It will also create the skin clust
 Usage:
     Select one or more geos and execute the script.
 """
-__author__ = "Rémi CUXAC"
+__author__ = "Remi CUXAC"
 
 import json
 import os

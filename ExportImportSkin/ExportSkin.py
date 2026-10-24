@@ -3,7 +3,7 @@ This script export the skin inside a json file, to be imported further.
 Usage:
     Select one or more geos and execute the script.
 """
-__author__ = "Rémi CUXAC"
+__author__ = "Remi CUXAC"
 
 import maya.cmds as cmds
 
