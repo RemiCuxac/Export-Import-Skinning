@@ -31,16 +31,21 @@ def export_selected_skins(pGeoList):
 
     folder = cmds.fileDialog2(dialogStyle=1, fileMode=3)
     folder = folder[0] if folder else None
+    skipped = []
     for geo in pGeoList:
         skin_deformer = get_skin_cluster(geo)
         if skin_deformer:
             cmds.deformerWeights(geo + ".json", format="JSON", path=folder, export=True,
                                  deformer=str(skin_deformer[0]))
         else:
-            cmds.confirmDialog(title="Problem", message=f"No skin cluster applied to {geo}. Export aborted.",
-                               button="OK")
-            return
-    cmds.confirmDialog(title="Good", message="Done !", button="OK")
+            skipped.append(geo)
+            cmds.warning(f"No skin cluster applied to {geo}. Export skipped for this object.")
+
+    if skipped:
+        cmds.confirmDialog(title="Almost good...",
+                           message=f"Skin exported for your selection except for:\n" + "\n".join(skipped), button="OK")
+    else:
+        cmds.confirmDialog(title="Good", message="Done !", button="OK")
 
 
 def get_geos_from_sel(pSelection):
