@@ -43,5 +43,17 @@ def export_selected_skins(pGeoList):
     cmds.confirmDialog(title="Good", message="Done !", button="OK")
 
 
+def get_geos_from_sel(pSelection):
+    geos = []
+    for obj in pSelection:
+        hierarchy = cmds.listRelatives(obj, type="transform", allDescendents=True) or []
+        hierarchy.append(obj)
+        for children in hierarchy:
+            if cmds.listRelatives(children, shapes=True, fullPath=True):
+                if children not in geos:
+                    geos.append(children)
+    return geos
+
+
 sel = cmds.ls(sl=1, type="transform")
-export_selected_skins(sel) if sel else cmds.error("Please select at least one geo", n=True)
+export_selected_skins(get_geos_from_sel(sel)) if sel else cmds.error("Please select at least one geo", n=True)
